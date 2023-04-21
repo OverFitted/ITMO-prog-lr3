@@ -1,6 +1,7 @@
 package exmp.entities;
 
 import exmp.locations.Location;
+import exmp.entities.Character;
 import lombok.*;
 
 import java.util.List;
