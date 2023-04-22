@@ -56,7 +56,7 @@ public class Game {
                 BaseCharacter spruts = findCharacterByName("Спрутс");
                 dialog(spruts, player, "Я же говорил, надо аккуратнее как-то, а ты...");
                 dialog(spruts, player, "...");
-                dialog(spruts, player, "Ладно, проблема решена, мистер Дубе");
+                dialog(spruts, player, "Проблема решена, мистер Дубе, спасибо за работу.");
                 endGame(scanner);
             }
 
@@ -84,33 +84,25 @@ public class Game {
                 case ATTACK -> {
                     System.out.println("Выберите персонажа, которого вы хотите атаковать:");
 
-                    Object[] characters = findCharactersByLocation(player.getLocation());
-                    if (characters.length == 0)
-                        System.out.println("Нет персонажей в этой локации.");
-                    else
-                        Arrays.stream(characters)
-                                .map(character -> (BaseCharacter) character)
-                                .forEach(baseCharacter -> System.out.println(baseCharacter.getName() + " - " + baseCharacter.getDescription()));
+                    BaseCharacter otherCharacter = chooseYourCharacter(scanner);
+                    if (otherCharacter != null && otherCharacter.getLocation().equals(player.getLocation())) {
+                        dialog(otherCharacter, player, "Нееееееееееет...");
+                        this.baseCharacters.remove(otherCharacter);
+                        System.out.println(otherCharacter.getName() + " погибает.");
+                    } else {
+                        System.out.println("Неверный выбор. Пожалуйста, выберите один из предложенных вариантов.");
+                    }
                 }
                 case TALK -> {
                     System.out.println("Выберите персонажа, с которым хотите поговорить:");
 
-                    Object[] characters = findCharactersByLocation(player.getLocation());
-                    if (characters.length == 0)
-                        System.out.println("Нет персонажей в этой локации.");
-                    else
-                        Arrays.stream(characters)
-                                .map(character -> (BaseCharacter) character)
-                                .forEach(baseCharacter -> System.out.println(baseCharacter.getName() + " - " + baseCharacter.getDescription()));
-
-                    String name = scanner.nextLine();
-                    BaseCharacter baseCharacter = findCharacterByName(name);
-                    if (baseCharacter != null && baseCharacter.getLocation().equals(player.getLocation())) {
+                    BaseCharacter otherCharacter = chooseYourCharacter(scanner);
+                    if (otherCharacter != null && otherCharacter.getLocation().equals(player.getLocation())) {
                         String dialogText = "Привет, " + player.getName() + "!";
-                        if (baseCharacter instanceof SpecialCharacter)
-                            dialogText = ((SpecialCharacter) baseCharacter).interact();
+                        if (otherCharacter instanceof SpecialCharacter)
+                            dialogText = ((SpecialCharacter) otherCharacter).interact();
 
-                        dialog(baseCharacter, player, dialogText);
+                        dialog(otherCharacter, player, dialogText);
                     } else {
                         System.out.println("Неверный выбор. Пожалуйста, выберите один из предложенных вариантов.");
                     }
@@ -120,6 +112,19 @@ public class Game {
                 }
             }
         }
+    }
+
+    private BaseCharacter chooseYourCharacter(Scanner scanner) {
+        Object[] characters = findCharactersByLocation(player.getLocation());
+        if (characters.length == 0)
+            System.out.println("Нет персонажей в этой локации.");
+        else
+            Arrays.stream(characters)
+                    .map(character -> (BaseCharacter) character)
+                    .forEach(baseCharacter -> System.out.println(baseCharacter.getName() + " - " + baseCharacter.getDescription()));
+
+        String name = scanner.nextLine();
+        return findCharacterByName(name);
     }
 
     private void endGame(Scanner scanner) {
