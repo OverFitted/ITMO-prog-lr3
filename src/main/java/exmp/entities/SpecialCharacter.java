@@ -1,22 +1,24 @@
 package exmp.entities;
 
 import exmp.locations.Location;
-import exmp.entities.Character;
 
 import java.util.List;
 
-public class SpecialCharacter extends Character {
+public class SpecialCharacter extends BaseCharacter {
     private final List<String> dialogLines;
+    private static int interacted = 0;
 
     public SpecialCharacter(String name, String description, Location location, List<String> dialogLines) {
         super(name, description, location);
         this.dialogLines = dialogLines;
     }
 
-    public void interact(Character player) {
-        System.out.println(getName() + " говорит " + player.getName() + ":");
-        for (String line : dialogLines) {
-            System.out.println(line);
-        }
+    public String interact() {
+        if (dialogLines.size() < interacted)
+            return dialogLines.get(++interacted);
+        else if (dialogLines.size() == 1)
+            return dialogLines.get(interacted);
+        else
+            return "К сожалению, мне больше нечего сказать";
     }
 }

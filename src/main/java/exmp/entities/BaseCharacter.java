@@ -16,10 +16,10 @@ import lombok.AllArgsConstructor;
 @AllArgsConstructor
 @EqualsAndHashCode(callSuper = true)
 @ToString(callSuper = true)
-public class Character extends BaseEntity implements ILocatable {
+public class BaseCharacter extends BaseEntity implements ILocatable {
     private Location location;
 
-    public Character(String name, String description, Location location) {
+    public BaseCharacter(String name, String description, Location location) {
         this.name = name;
         this.description = description;
         this.location = location;

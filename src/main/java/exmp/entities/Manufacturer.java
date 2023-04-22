@@ -1,7 +1,6 @@
 package exmp.entities;
 
 import exmp.locations.Location;
-import exmp.entities.Character;
 import lombok.*;
 
 import java.util.List;
@@ -12,10 +11,10 @@ import java.util.List;
 @AllArgsConstructor
 @EqualsAndHashCode(callSuper = true)
 @ToString(callSuper = true)
-public class Manufacturer extends Character {
-    private List<Character> employees;
+public class Manufacturer extends BaseCharacter {
+    private List<BaseCharacter> employees;
 
-    public Manufacturer(String name, String description, Location location, List<Character> employees) {
+    public Manufacturer(String name, String description, Location location, List<BaseCharacter> employees) {
         this.name = name;
         this.description = description;
         this.setLocation(location);
@@ -28,11 +27,11 @@ public class Manufacturer extends Character {
         this.setLocation(location);
     }
 
-    public List<Character> getEmployees() {
+    public List<BaseCharacter> getEmployees() {
         return employees;
     }
 
-    public void setEmployees(List<Character> employees) {
+    public void setEmployees(List<BaseCharacter> employees) {
         this.employees = employees;
     }
 }
