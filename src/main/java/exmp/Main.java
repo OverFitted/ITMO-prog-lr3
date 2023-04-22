@@ -14,8 +14,17 @@ public class Main {
         Location forest = new Location("Лес", new ArrayList<>());
         Location moon = new Location("Луна", new ArrayList<>());
         Location city = new Location("Цветочный город", new ArrayList<>());
+
+        lumberMill.setAvailableLocations(List.of(city, tavern));
+        tavern.setAvailableLocations(List.of(forest, lumberMill, city));
+        forest.setAvailableLocations(List.of(lumberMill, city));
+        moon.setAvailableLocations(List.of(city));
+        city.setAvailableLocations(List.of(moon, forest, tavern, lumberMill));
+
         Manufacturer dube = new Manufacturer("Дубе", "Владелец лесопильных заводов", lumberMill);
-        BaseCharacter spruts = new BaseCharacter("Спрутс", "Бывший миллиардер и хозяин мануфактуры, выпускающей сахар, чай и ткани.", lumberMill);
+
+        List<String> sprutsDialogLines = List.of("Работа должна быть выполнена!");
+        SpecialCharacter spruts = new SpecialCharacter("Спрутс", "Бывший миллиардер и хозяин мануфактуры, выпускающей сахар, чай и ткани.", lumberMill, sprutsDialogLines);
 
         List<String> miguDialogLines = List.of("Привет!", "Поговори со мной еще!", "Я вам больше не помешаю.");
         SpecialCharacter migu = new SpecialCharacter("Мига", "Житель Луны, бывший приятель Жулио.", moon, miguDialogLines);
@@ -27,7 +36,7 @@ public class Main {
         SpecialCharacter noName = new SpecialCharacter("Незнайка", "Веселый шалун и фантазер, коротышка. Путешественник, житель Цветочного города.", city, noNameDialogLines);
 
         List<String> goatDialogLines = List.of("Я не знаю, что может говорить Козлик...");
-        SpecialCharacter goat = new SpecialCharacter("Мига", "Тот еще козел.", forest, goatDialogLines);
+        SpecialCharacter goat = new SpecialCharacter("Козлик", "Тот еще козел.", forest, goatDialogLines);
 
         List<SpecialCharacter> specialCharacters = new ArrayList<>(List.of(migu, julio, noName, goat));
         List<BaseCharacter> baseCharacters = new ArrayList<>(List.of(dube, spruts));

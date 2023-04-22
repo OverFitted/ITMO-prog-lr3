@@ -71,15 +71,16 @@ public class Game {
             ActionType actionType = ActionType.values()[choice - 1];
             switch (actionType) {
                 case MOVE -> {
+                    List<Location> availableLocations = player.getLocation().getAvailableLocations();
                     System.out.println("Выберите локацию:");
-                    for (int i = 0; i < locations.size(); i++) {
-                        System.out.println((i + 1) + ". " + locations.get(i).getName());
+                    for (int i = 0; i < availableLocations.size(); i++) {
+                        System.out.println((i + 1) + ". " + availableLocations.get(i).getName());
                     }
                     int locationIndex = scanner.nextInt() - 1;
-                    if (locationIndex >= locations.size())
+                    if (locationIndex >= availableLocations.size())
                         System.out.println("Неверный выбор. Пожалуйста, выберите один из предложенных вариантов.");
                     else
-                        player.setLocation(locations.get(locationIndex));
+                        player.setLocation(availableLocations.get(locationIndex));
                 }
                 case ATTACK -> {
                     System.out.println("Выберите персонажа, которого вы хотите атаковать:");
@@ -118,10 +119,15 @@ public class Game {
         Object[] characters = findCharactersByLocation(player.getLocation());
         if (characters.length == 0)
             System.out.println("Нет персонажей в этой локации.");
-        else
+        else {
             Arrays.stream(characters)
                     .map(character -> (BaseCharacter) character)
-                    .forEach(baseCharacter -> System.out.println(baseCharacter.getName() + " - " + baseCharacter.getDescription()));
+                    .forEach(baseCharacter -> {
+                        if (!baseCharacter.getName().equals(player.getName())) {
+                            System.out.println(baseCharacter.getName() + " - " + baseCharacter.getDescription());
+                        }
+                    });
+        }
 
         String name = scanner.nextLine();
         return findCharacterByName(name);
