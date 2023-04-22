@@ -28,6 +28,7 @@ public class Game {
     private void openingScene() {
         Character spruts = findCharacterByName("Спрутс");
         System.out.println("Кат-сцена: Диалог между Дубе и господином Спрутсом\n");
+        dialog(spruts, player, "Мистер Дубе, есть дело... надо убрать с дороги Мигу и Жулио, а заодно и Незнайку с Козликом. Дело надо убить в зародыше!");
         dialog(player, spruts, "Я могу предложить двух талантливых личностей, которые помогут нам в этом деле.");
         dialog(spruts, player, "Господин Дубе, вы, видимо, меня не поняли. Убить в зародыше - это не в буквальном смысле.");
     }
@@ -62,7 +63,10 @@ public class Game {
                         System.out.println((i + 1) + ". " + locations.get(i).getName());
                     }
                     int locationIndex = scanner.nextInt() - 1;
-                    player.setLocation(locations.get(locationIndex));
+                    if (locationIndex >= locations.size())
+                        System.out.println("Неверный выбор. Пожалуйста, выберите один из предложенных вариантов.");
+                    else
+                        player.setLocation(locations.get(locationIndex));
                 }
                 case TALK -> {
                     System.out.println("Выберите персонажа, с которым хотите поговорить:");
@@ -78,13 +82,13 @@ public class Game {
                     String name = scanner.nextLine();
                     Character character = findCharacterByName(name);
                     if (character != null && character.getLocation().equals(player.getLocation())) {
-                        if (character instanceof SpecialCharacter) {
+                        String diallogText = "Привет, " + player.getName() + "!"
+                        if (character instanceof SpecialCharacter)
                             ((SpecialCharacter) character).interact(player);
-                        } else {
-                            System.out.println(character.getName() + ": Привет, " + player.getName() + "!");
-                        }
+
+                        dialog(character, player, diallogText);
                     } else {
-                        System.out.println("Персонаж не найден или находится в другой локации.");
+                        System.out.println("Неверный выбор. Пожалуйста, выберите один из предложенных вариантов.");
                     }
                 }
                 case QUIT -> {
