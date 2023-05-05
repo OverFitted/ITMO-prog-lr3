@@ -12,8 +12,8 @@ import java.util.Scanner;
 import static java.lang.System.exit;
 
 public class Game {
-    private BaseCharacter player;
-    private List<BaseCharacter> baseCharacters;
+    private final BaseCharacter player;
+    private final List<BaseCharacter> baseCharacters;
     private List<Location> locations;
 
     public Game(BaseCharacter player, List<BaseCharacter> baseCharacters, List<Location> locations) {
