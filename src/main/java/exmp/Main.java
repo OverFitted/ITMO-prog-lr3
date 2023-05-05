@@ -43,6 +43,10 @@ public class Main {
         RichPerson richPerson3 = new RichPerson("Сахарный богач", "Владелец сахарозавода", moon, sugarCouncil);
         RichPerson richPerson4 = new RichPerson("Угольный богач", "Владелец угольной шахты", moon, coalCouncil);
 
+        List<Item> dubeItems = List.of(new Item("Оружие", "Убийственное оружие для убийств"));
+        Manufacturer.Inventory dubeInventory = new Manufacturer.Inventory(dubeItems);
+        dube.setInventory(dubeInventory);
+
         bigCouncil.getMembers().add(spruts);
         cheeseCouncil.getMembers().add(richPerson2);
         sugarCouncil.getMembers().add(richPerson3);

@@ -18,4 +18,22 @@ public class RichPerson extends BaseCharacter {
         this.setLocation(location);
         this.council = council;
     }
+
+    public class Money {
+        private int amount = 150;
+
+        public Money() {}
+
+        public Money(int amount) {
+            this.amount = amount;
+        }
+
+        public int getAmount() {
+            return amount;
+        }
+
+        public void setAmount(int amount) {
+            this.amount = amount;
+        }
+    }
 }

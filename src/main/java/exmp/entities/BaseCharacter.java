@@ -10,6 +10,9 @@ import lombok.ToString;
 import lombok.NoArgsConstructor;
 import lombok.AllArgsConstructor;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Getter
 @Setter
 @NoArgsConstructor
@@ -31,5 +34,23 @@ public class BaseCharacter extends BaseEntity implements ILocatable {
 
     public void setLocation(Location location) {
         this.location = location;
+    }
+
+    public static class Inventory {
+        private List<Item> items = new ArrayList<>();
+
+        public Inventory() {}
+
+        public Inventory(List<Item> items) {
+            this.items = items;
+        }
+
+        public void addItem(Item item) {
+            items.add(item);
+        }
+
+        public List<Item> getItems() {
+            return items;
+        }
     }
 }

@@ -13,6 +13,7 @@ import java.util.List;
 @ToString(callSuper = true)
 public class Manufacturer extends BaseCharacter {
     private List<BaseCharacter> employees;
+    private Inventory inventory;
 
     public Manufacturer(String name, String description, Location location, List<BaseCharacter> employees) {
         this.name = name;
@@ -33,5 +34,13 @@ public class Manufacturer extends BaseCharacter {
 
     public void setEmployees(List<BaseCharacter> employees) {
         this.employees = employees;
+    }
+
+    public void setInventory(Inventory inventory){
+        this.inventory = inventory;
+    }
+
+    public Inventory getInventory(){
+        return this.inventory;
     }
 }

@@ -1,9 +1,12 @@
 package exmp;
 
-import exmp.entities.SpecialCharacter;
+import exmp.entities.*;
 import exmp.enums.ActionType;
+import exmp.exceptions.GameLoadException;
+import exmp.exceptions.InvalidActionException;
+import exmp.exceptions.InvalidCharacterException;
+import exmp.exceptions.InvalidLocationException;
 import exmp.locations.Location;
-import exmp.entities.BaseCharacter;
 
 import java.util.Arrays;
 import java.util.List;
@@ -12,27 +15,43 @@ import java.util.Scanner;
 import static java.lang.System.exit;
 
 public class Game {
-    private final BaseCharacter player;
+    private final Manufacturer player;
     private final List<BaseCharacter> baseCharacters;
     private List<Location> locations;
 
-    public Game(BaseCharacter player, List<BaseCharacter> baseCharacters, List<Location> locations) {
+    public Game(Manufacturer player, List<BaseCharacter> baseCharacters, List<Location> locations) {
         this.player = player;
         this.baseCharacters = baseCharacters;
         this.locations = locations;
     }
 
     public void start() {
-        openingScene();
-        gameLoop();
+        try {
+            openingScene();
+            gameLoop();
+        } catch (GameLoadException e) {
+            System.err.println(e.getMessage());
+        }
     }
 
-    private void openingScene() {
-        BaseCharacter spruts = findCharacterByName("Спрутс");
-        System.out.println("Кат-сцена: Диалог между Дубе и господином Спрутсом\n");
-        dialog(spruts, player, "Мистер Дубе, есть дело... надо убрать с дороги Мигу и Жулио, а заодно и Незнайку с Козликом. Дело надо убить в зародыше!");
-        dialog(player, spruts, "Я могу предложить двух талантливых личностей, которые помогут нам в этом деле.");
-        dialog(spruts, player, "Господин Дубе, вы, видимо, меня не поняли. Убить в зародыше - это не в буквальном смысле.");
+    private void openingScene() throws GameLoadException {
+        try {
+            RichPerson spruts = (RichPerson) findCharacterByName("Спрутс");
+            RichPerson.Money sprutsMoney = spruts.new Money(127541);
+            System.out.println("Кат-сцена: Диалог между Дубе и господином Спрутсом\n");
+            dialog(spruts, player, "Мистер Дубе, есть дело... надо убрать с дороги Мигу и Жулио, а заодно и Незнайку с Козликом. Дело надо убить в зародыше!");
+            dialog(spruts, player, "Готов заплатить за это Вам... скажем " + Math.round(sprutsMoney.getAmount() * .001));
+            dialog(player, spruts, "Я могу предложить двух талантливых личностей, которые помогут нам в этом деле.");
+            dialog(spruts, player, "Господин Дубе, вы, видимо, меня не поняли. Убить в зародыше - это не в буквальном смысле.");
+        } catch (Exception e){
+            throw new GameLoadException(e.getMessage());
+        }
+    }
+
+    class ItemPrinter {
+        void printItem(Item item) {
+            System.out.println(item.getName() + ": " + item.getDescription());
+        }
     }
 
     private void dialog(BaseCharacter speaker, BaseCharacter listener, String message) {
@@ -44,11 +63,17 @@ public class Game {
 
         while (true) {
             System.out.println("\nТекущая локация: " + player.getLocation().getName());
+
+            ItemPrinter itemPrinter = new ItemPrinter();
+            System.out.println("Предметы в инвентаре:");
+            for (Item item : player.getInventory().getItems()) {
+                itemPrinter.printItem(item);
+            }
+
             System.out.println("Выберите действие:");
             for (ActionType action : ActionType.values()) {
                 System.out.println((action.ordinal() + 1) + ". " + action.getDescription());
             }
-
             boolean containsSpecialCharacter = baseCharacters.stream()
                     .anyMatch(character -> character instanceof SpecialCharacter);
 
@@ -63,8 +88,12 @@ public class Game {
             int choice = scanner.nextInt();
             scanner.nextLine();
 
-            if (choice < 1 || choice > ActionType.values().length) {
-                System.out.println("Неверный выбор. Пожалуйста, выберите один из предложенных вариантов.");
+            try {
+                if (choice < 1 || choice > ActionType.values().length) {
+                    throw new InvalidActionException("Неверный выбор. Пожалуйста, выберите один из предложенных вариантов.");
+                }
+            } catch (InvalidActionException e) {
+                System.err.println(e.getMessage());
                 continue;
             }
 
@@ -77,10 +106,11 @@ public class Game {
                         System.out.println((i + 1) + ". " + availableLocations.get(i).getName());
                     }
                     int locationIndex = scanner.nextInt() - 1;
-                    if (locationIndex >= availableLocations.size())
-                        System.out.println("Неверный выбор. Пожалуйста, выберите один из предложенных вариантов.");
-                    else
+                    if (locationIndex < availableLocations.size()) {
                         player.setLocation(availableLocations.get(locationIndex));
+                    } else {
+                        throw new InvalidLocationException("Неверный выбор. Пожалуйста, выберите один из предложенных вариантов.");
+                    }
                 }
                 case ATTACK -> {
                     System.out.println("Выберите персонажа, которого вы хотите атаковать:");
@@ -91,7 +121,7 @@ public class Game {
                         this.baseCharacters.remove(otherCharacter);
                         System.out.println(otherCharacter.getName() + " погибает.");
                     } else {
-                        System.out.println("Неверный выбор. Пожалуйста, выберите один из предложенных вариантов.");
+                        throw new InvalidCharacterException("Неверный выбор. Пожалуйста, выберите один из предложенных вариантов.");
                     }
                 }
                 case TALK -> {
@@ -105,7 +135,7 @@ public class Game {
 
                         dialog(otherCharacter, player, dialogText);
                     } else {
-                        System.out.println("Неверный выбор. Пожалуйста, выберите один из предложенных вариантов.");
+                        throw new InvalidCharacterException("Неверный выбор. Пожалуйста, выберите один из предложенных вариантов.");
                     }
                 }
                 case QUIT -> {
