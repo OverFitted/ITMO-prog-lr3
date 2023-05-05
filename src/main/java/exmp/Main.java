@@ -57,7 +57,16 @@ public class Main {
 
         List<SpecialCharacter> specialCharacters = new ArrayList<>(List.of(migu, julio, noName, goat));
         List<BaseCharacter> baseCharacters = new ArrayList<>(List.of(dube, spruts));
-        List<Location> locations = List.of(sawmill, tavern, forest, flowerCity, moon);
+        List<Location> locations = new ArrayList<>(List.of(sawmill, tavern, forest, flowerCity, moon));
+
+        Location forgottenCity = new Location("Забытый город", -100000000, +100000000) {
+            @Override
+            public String getName() {
+                return "Несуществующая локация: " + super.getName().toLowerCase();
+            }
+        };
+
+        locations.add(forgottenCity);
 
         int employeesCount = 15;
         List<BaseCharacter> employees = new ArrayList<>();
